@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Something for You</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fce4ec;
+      color: #5c2d91;
+      margin: 0;
+      padding: 0;
+    }
+
+    canvas.hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .cover {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #ec407a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .cover h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .cover button {
+      padding: 12px 24px;
+      font-size: 1.2em;
+      background-color: white;
+      color: #ec407a;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cover button:hover {
+      background-color: #ffeef5;
+    }
+
+    main {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      height: 70vh;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    #letterContent {
+      width: 90%;
+      height: 500%;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    #letterContent::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #letterContent::-webkit-scrollbar-thumb {
+      background-color: #ec407a;
+      border-radius: 4px;
+    }
+
+    .paragraph {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      font-size: 1em;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .paragraph.active {
+      display: block;
+      opacity: 1;
+    }
+
+    #nextBtn, #replyBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #ec407a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #nextBtn:hover, #replyBtn:hover {
+      background-color: #d81b60;
+    }
+
+    ul.promise-list {
+      list-style-type: none;
+      padding-left: 0;
+      color: #c2185b;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    ul.promise-list li {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .cover h1 {
+        font-size: 2em;
+      }
+
+      .cover button {
+        font-size: 1em;
+        padding: 10px 18px;
+      }
+
+      main {
+        margin: 10px;
+        padding: 15px;
+        height: 80vh;
+      }
+
+      #nextBtn, #replyBtn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2023/03/01/audio_e2b70eb313.mp3" type="audio/mpeg">
+  </audio>
+
+  <canvas class="hearts"></canvas>
+
+  <div class="cover" id="coverPage">
+    <h1>Something for You</h1>
+    <button onclick="startLetter()">Open Letter</button>
+  </div>
+
+  <main id="letterContainer">
+    <div id="letterContent"></div>
+    <button id="nextBtn" onclick="showNext()">Next</button>
+    <button id="replyBtn" style="display:none" onclick="alert('Thank you. 💖')">That's It 😊</button>
+  </main>
+
+  <script>
+const paragraphs = [
+      "This is something I wanted to tell you for months now.",
+      "So here it goes.",
+      "The days we were still dating, I actually knew he liked you so I did tell you that, and then I somewhat thought he'd give you everything you wanted. So I told you that he liked you, and he did. And then the confession came and I realized if I pressured you to choose me, it wouldn't last long. You didn’t want to choose either, so I let you go—not out of hate nor spite. I wanted you to have a better life than I could give at that moment.",
+      "After I stopped talking with you, I literally hated myself for letting you go because I genuinely loved and cared for you. There’s a phrase that says you’ll know you really loved someone when you let them go. I actually felt what they were trying to say. The only reason I could accept it is that I did it for your own good. So, I forgave myself eventually. But even though I did, there wasn’t a day up until now that you haven’t crossed my mind. Actually, I’ve been thinking about you like a madman. Not those things...only your happy face, the funny and silly video call moments. Those are the things that come to my mind when you cross my mind.",
+      "When we were dating, you said that you wanted a six-pack, and that I’d have to buy a beach if you wanted to wear a bikini. You also said I could become filthy rich. And about the filthy rich part, I’m on my way there. And as for six-packs...I only have genetics for a 4-pack.",
+      "The day you posted your first couple photo and when I saw that on your WhatsApp status, it really felt like a stab. I never felt that much pain, but I accepted the fact that you were gone. And when you talked like that in the Aissa group, it really felt like stabbing. Well, you know how to hurt me... I give credit to you for that.",
+      "But after 8 months passed, I realized how much you meant to me. I tried dating after a few months, trying to move on, but I literally can't. My heart won’t let you go. No matter how hard I tried, it just won’t happen.",
+      "I’ll be really honest—the reason why I liked you in the first place is because the day we first met at the Aissa Expo, and do you remember you fed me, and I fed you too? Your energy and character are the reason I liked you in the first place. Well, you were the most beautiful girl there—that's true too. But above it all, what I truly liked about you was how you acted like a girl—feminine. That’s what I loved and liked about you. And you're stronger than I am. You're brave for carrying so much on your mind and shoulders. I admire you for your confidence, and I love the way you dress. Sure, it’s tempting, and turns heads around—gives off a model vibe.",
+      "When you told me you wanted to be a model, I genuinely believed that you could become one because of your body shape, your confidence, and your strength to do things alone. After we stopped talking, I copied that trait from you, and now I’m stubborn as hell. And confident too.",
+      "When we split, I wasn’t sure what I’d do, but after coming this far and changing myself completely, what I only realized is I only want you to be a part of my life, not anyone else.",
+      "So the day I said I loved you and cared about you, I literally meant it. And I still keep the promises I made to you that night. Sure, some of them can’t be kept with you not in my life, but others still apply.",
+      `Here are the promises I'm giving you:<ul class="promise-list">
+        <li>1. I won't ever leave you.</li>
+        <li>2. I won't hurt you consciously.</li>
+        <li>3. I won't hold anything against you.</li>
+        <li>4. I'll be with you until the day we die.</li>
+        <li>5. I'll always try to solve the argument.</li>
+        <li>6. I won't ever use your past to hurt you.</li>
+        <li>7. I will always unconditionally love you.</li>
+        <li>8. I will be the best version of me.</li>
+        <li>9. I'll try my best not to hurt you.</li>
+        <li>10. I'll always protect you.</li>
+        <li>11. I won't ever leave you alone at night.</li>
+        <li>12. I won't ever talk about breaking up.</li>
+      </ul>`,
+      "I’ve kept these promises to this day:",
+      "1. Even though I left you physically, I still kept you in my heart, and no one has been able to remove you from there.",
+      "2. I never hurt you consciously, and I never will.",
+      "3. I only hold love and care, and nothing else towards you.",
+      "4. If you allow it, I will be with you.",
+      "5 & 6. I still do and always will.",
+      "7. Unconditionally is the word for what I feel. Even if you hate me or despise me, I love you unconditionally, and I still keep that to this day.",
+      "8. To be honest, I became my best version because of you, and I still keep improving.",
+      "9 & 10. I do, and I still do.",
+      "About #11: After we stopped talking, I couldn’t sleep because I knew you couldn't sleep alone at night. So I was up all nights till dawn, hoping if you sent a message or called, I would be able to pick it up.",
+      "So, I know this won't change the past or what happened, but you said today that you’ve put the past behind. I did the same too, but the memories, the time I spent with you, the days I had you in my life, they are too precious to leave behind. And the way you made me feel about life—you brought color to my life. How could I let something like that stay in the past? Even if you’re a ghost from the past and I live in the future, I’ll always keep you by my side. That's what I realized. The past couple of months have been intense, trying not to reach out or think about you. I did that for months, and I just can't live this way. So this is some of the things I wanted to say to you but couldn’t.",
+      "There are so many things I wanna tell you. And if I get the chance, I would live 1,000 years, no—∞ years with you because that’s how much you mean to me... and meant to me..."
+    ];
+    let currentIndex = 0;
+
+    function startLetter() {
+      document.getElementById("coverPage").style.display = "none";
+      document.getElementById("letterContainer").style.display = "flex";
+      showNext();
+    }
+
+    function showNext() {
+      const container = document.getElementById("letterContent");
+      const paragraph = document.createElement("div");
+      paragraph.className = "paragraph active";
+      paragraph.innerHTML = paragraphs[currentIndex];
+      container.appendChild(paragraph);
+      container.scrollTop = container.scrollHeight;
+      currentIndex++;
+
+      if (currentIndex >= paragraphs.length) {
+        document.getElementById("nextBtn").style.display = "none";
+        document.getElementById("replyBtn").style.display = "inline-block";
+      }
+    }
+
+    // Floating hearts animation
+    const canvas = document.querySelector(".hearts");
+    const ctx = canvas.getContext("2d");
+    let hearts = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function Heart() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height + Math.random() * canvas.height;
+      this.size = Math.random() * 20 + 10;
+      this.speed = Math.random() * 1 + 0.5;
+      this.opacity = Math.random() * 0.5 + 0.5;
+    }
+
+    Heart.prototype.draw = function () {
+      ctx.globalAlpha = this.opacity;
+      ctx.font = `${this.size}px Arial`;
+      ctx.fillText("💖", this.x, this.y);
+    };
+
+    Heart.prototype.update = function () {
+      this.y -= this.speed;
+      if (this.y < 0) {
+        this.y = canvas.height + 10;
+        this.x = Math.random() * canvas.width;
+      }
+    };
+
+    function animateHearts() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hearts.forEach((heart) => {
+        heart.update();
+        heart.draw();
+      });
+      requestAnimationFrame(animateHearts);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    for (let i = 0; i < 30; i++) hearts.push(new Heart());
+    animateHearts();
+  </script>
+</body>
+</html>
